@@ -91,14 +91,24 @@
         <h5>Perkembangan Murid</h5>
         <div class="input-group input-group-outline ms-3" style="max-width: 150px">
             <select id="filter-chart" class="form-control" name="year">
-                @for ($i = 1980; $i <= date('Y'); $i++)
-                    <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>{{ $i }}</option>
+                <option value="">Semua Tahun</option>
+                @for ($i = 2000; $i <= date('Y'); $i++)
+                    <option value="{{ $i }}">{{ $i }}</option>
                 @endfor
                 @for ($i = date('Y') + 1; $i <= 2045; $i++)
                     <option value="{{ $i }}">{{ $i }}</option>
                 @endfor
             </select>
         </div>
+        @if (Auth::user()->role === 'admin' || Auth::user()->role === 'kepala-sekolah')
+        <div class="input-group input-group-outline ms-3" style="max-width: 150px">
+            <select id="filter-classroom" class="form-control" name="classroom">
+                <option value="">Semua Kelas</option>
+                <option value="A">Kelas A</option>
+                <option value="B">Kelas B</option>
+            </select>
+        </div>
+        @endif
     </div>
     <div id="my-charts" class="row">
     </div>
@@ -198,12 +208,17 @@ function createChart(elementId, items, label) {
     });
 }
 
+const queries = {
+    year: '',
+    classRoom: '',
+}
 const manageCharts = {}
-async function getDatasets(year) {
+async function getDatasets() {
     try {
         const endpoint = {!! json_encode(route('charts')) !!};
-        const query = !!year ? `?year=${year}` : ''
-        const res = await fetch(endpoint + query)
+        // const year = !!queries.year ? `year=${queries.year}` : ''
+        // const classRoom = !!queries.classRoom ? `&classroom=${queries.classRoom}` : ''
+        const res = await fetch(endpoint + `?year=${queries.year}&classroom=${queries.classRoom}`)
         const data = await res.json()
         for (item in data) {
             const newData = [data[item].mb, data[item].bsh, data[item].bsb]
@@ -230,7 +245,13 @@ getDatasets()
 
 const filterChart = document.getElementById('filter-chart')
 filterChart.addEventListener('change', function(e) {
-    getDatasets(e.target.value)
+    queries.year = e.target.value
+    getDatasets()
+})
+const filterClassroom = document.getElementById('filter-classroom')
+filterClassroom.addEventListener('change', function(e) {
+    queries.classRoom = e.target.value
+    getDatasets()
 })
 </script>
 @endsection

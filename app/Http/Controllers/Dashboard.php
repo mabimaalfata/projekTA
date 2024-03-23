@@ -46,59 +46,125 @@ class Dashboard extends Controller
     }
 
     public function charts(Request $request)
-    {
-        if ($request->has('year')) {
-            $year = $request->input('year');
-        } else {
-            $year = Carbon::now()->year;
-        }
+{
+    $year = $request->query('year');
+    $classroom = $request->query('classroom');
 
-        $aspek_kode = Aspek::select('kode')->get();
-        $query = Nilai::query();
+    $aspek_kode = Aspek::select('kode')->get();
+    $query = Nilai::query();
 
-        if (Auth::user()->role === 'guru') {
-            $guru = Biodata::where('user_id', Auth::user()->id)
-                ->select('kelas')->first();
+    if (Auth::user()->role === 'guru') {
+        $guru = Biodata::where('user_id', Auth::user()->id)
+            ->select('kelas')->first();
 
-            $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
-                ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
-                ->join('biodata', 'biodata.user_id', '=', 'nilai_siswa.user_id')
-                ->where('biodata.kelas', $guru->kelas)
-                ->where('nilai_siswa.awal_ajaran', $year);
-        }
-        if (Auth::user()->role === 'admin') {
-            $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
+        $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
             ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
-            ->where('nilai_siswa.awal_ajaran', $year);
-        }
+            ->join('biodata', 'biodata.user_id', '=', 'nilai_siswa.user_id')
+            ->where('biodata.kelas', $guru->kelas);
+    }
+    if (Auth::user()->role === 'admin' || Auth::user()->role === 'kepala-sekolah') {
+        $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
+            ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
+            ->join('biodata', 'biodata.user_id', '=', 'nilai_siswa.user_id');
+    }
 
-        $data = $query->get();
-        $result = [];
-        foreach ($aspek_kode as $aspek) {
-            $result[$aspek->kode] = [
-                'mb' => 0,
-                'bsh' => 0,
-                'bsb' => 0,
-            ];
-            foreach ($data as $item) {
-                if ($item->kode === $aspek->kode && $item->nilai === 'mb') {
-                    $result[$aspek->kode]['mb']++;
-                }
-                if ($item->kode === $aspek->kode && $item->nilai === 'bsh') {
-                    $result[$aspek->kode]['bsh']++;
-                }
-                if ($item->kode === $aspek->kode && $item->nilai === 'bsb') {
-                    $result[$aspek->kode]['bsb']++;
-                }
+    if ($year != '') {
+        $query->where('nilai_siswa.awal_ajaran', $year);
+    }
+
+    if ($classroom != '') {
+        $query->where('biodata.kelas', $classroom);
+    }
+
+    $data = $query->get();
+    $result =[];
+    foreach ($aspek_kode as $aspek) {
+        $result[$aspek->kode] = [
+            'mb' => 0,
+            'bsh' => 0,
+            'bsb' => 0,
+        ];
+        foreach ($data as $item) {
+            if ($item->kode === $aspek->kode && $item->nilai === 'mb') {
+                $result[$aspek->kode]['mb']++;
+            }
+            if ($item->kode === $aspek->kode && $item->nilai === 'bsh') {
+                $result[$aspek->kode]['bsh']++;
+            }
+            if ($item->kode === $aspek->kode && $item->nilai === 'bsb') {
+                $result[$aspek->kode]['bsb']++;
             }
         }
-        return response()->json($result);
     }
+    return response()->json($result);
+}
+
+    // public function charts(Request $request)
+    // {
+    //     if ($request->has('year')) {
+    //         $year = $request->input('year');
+    //     } else {
+    //         $year = '';
+    //     }
+
+    //     if ($request->has('classroom')) {
+    //         $classroom = $request->input('classroom');
+    //     } else {
+    //         $classroom = '';
+    //     }
+
+    //     $aspek_kode = Aspek::select('kode')->get();
+    //     $query = Nilai::query();
+
+    //     if (Auth::user()->role === 'guru') {
+    //         $guru = Biodata::where('user_id', Auth::user()->id)
+    //             ->select('kelas')->first();
+
+    //         $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
+    //             ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
+    //             ->join('biodata', 'biodata.user_id', '=', 'nilai_siswa.user_id')
+    //             ->where('biodata.kelas', $guru->kelas)
+    //             ->where('nilai_siswa.awal_ajaran', $year);
+    //     }
+    //     if (Auth::user()->role === 'admin' || Auth::user()->role === 'kepala-sekolah') {
+    //         $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
+    //         ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
+    //         ->join('biodata', 'biodata.user_id', '=', 'nilai_siswa.user_id')
+    //         ->where('biodata.kelas', $classroom)
+    //         ->orWhere('nilai_siswa.awal_ajaran', $year);
+    //     }
+
+    //     $data = $query->get();
+    //     $result = [];
+    //     foreach ($aspek_kode as $aspek) {
+    //         $result[$aspek->kode] = [
+    //             'mb' => 0,
+    //             'bsh' => 0,
+    //             'bsb' => 0,
+    //         ];
+    //         foreach ($data as $item) {
+    //             if ($item->kode === $aspek->kode && $item->nilai === 'mb') {
+    //                 $result[$aspek->kode]['mb']++;
+    //             }
+    //             if ($item->kode === $aspek->kode && $item->nilai === 'bsh') {
+    //                 $result[$aspek->kode]['bsh']++;
+    //             }
+    //             if ($item->kode === $aspek->kode && $item->nilai === 'bsb') {
+    //                 $result[$aspek->kode]['bsb']++;
+    //             }
+    //         }
+    //     }
+    //     return response()->json($result);
+    // }
 
     public function users(Request $request)
     {
         $query = Biodata::query();
         $query->join('users', 'users.id', '=', 'biodata.user_id');
+
+        if (Auth::user()->role === 'kepala-sekolah') {
+            $query->whereIn('users.role', ['guru', 'siswa']);
+        }
 
         if ($request->has('search')) {
             $search = $request->input('search');

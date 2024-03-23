@@ -27,7 +27,7 @@
                 </a>
             </li>
 
-            @if(Auth::user()->role === 'admin')
+            @if(Auth::user()->role === 'admin' || Auth::user()->role === 'kepala-sekolah')
             <li class="nav-item">
                 <a class="nav-link text-white {{ Route::currentRouteName() === 'users' ? 'active bg-gradient-primary' : '' }}"
                     href="/dashboard/users">

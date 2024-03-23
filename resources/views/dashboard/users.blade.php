@@ -17,6 +17,7 @@
                             <input name="search" type="text" class="form-control">
                         </div>
                     </div>
+                    @if (Auth::user()->role === 'admin')
                     <div class="col-12 col-md-3 col-lg-2">
                         <div class="input-group input-group-outline">
                             <select name="role" class="form-control" id="role">
@@ -27,6 +28,7 @@
                             </select>
                         </div>
                     </div>
+                    @endif
                     <div class="col-12 col-md-3 col-lg-2">
                         <div class="input-group input-group-outline">
                             <select name="classroom" class="form-control" id="kelas">
@@ -201,6 +203,7 @@
                             <option value="">Pilih role akun</option>
                             <option value="siswa">Siswa</option>
                             <option value="guru">Guru</option>
+                            <option value="kepala-sekolah">Kepala Sekolah</option>
                             <option value="admin">Admin</option>
                         </select>
                     </div>
