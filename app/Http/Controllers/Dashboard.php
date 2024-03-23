@@ -25,7 +25,6 @@ class Dashboard extends Controller
                 ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
                 ->select('nilai_siswa.*', 'poin_aspek.nama_poin', 'aspek.nama_aspek')
                 ->paginate(10);
-
             return view('dashboard.index', ['nilai' => $nilai]);
         }
 
@@ -34,6 +33,7 @@ class Dashboard extends Controller
         $kelas_a = Biodata::where('kelas', '=', 'A')->count();
         $kelas_b = Biodata::where('kelas', '=', 'B')->count();
         $total_aspek = Aspek::count();
+        $aspeks = Aspek::select('id', 'nama_aspek', 'kode')->get();
 
         return view('dashboard.index', [
             'total_siswa' => $total_siswa,
@@ -41,6 +41,7 @@ class Dashboard extends Controller
             'total_aspek' => $total_aspek,
             'kelas_a' => $kelas_a,
             'kelas_b' => $kelas_b,
+            'aspeks' => $aspeks
         ]);
     }
 
@@ -64,7 +65,7 @@ class Dashboard extends Controller
 
         if ($request->role) {
             if ($request->user()->role == 'guru') {
-                $role = 'murid';
+                $role = 'siswa';
             } else {
                 $role = $request->role;
             }

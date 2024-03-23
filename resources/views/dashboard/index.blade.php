@@ -86,6 +86,23 @@
         </div>
     </div>
 </div>
+<div class="mt-4">
+    <div class="w-100 d-flex flex-col flex-md-row align-items-center mb-4">
+        <h5>Perkembangan Murid</h5>
+        <div class="input-group input-group-outline ms-3" style="max-width: 150px">
+            <select class="form-control" name="year">
+                @for ($i = 1980; $i <= date('Y'); $i++)
+                    <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>{{ $i }}</option>
+                @endfor
+                @for ($i = date('Y') + 1; $i <= 2045; $i++)
+                    <option value="{{ $i }}">{{ $i }}</option>
+                @endfor
+            </select>
+        </div>
+    </div>
+    <div id="my-charts" class="row">
+    </div>
+</div>
 @endif
 
 @if(Auth::user()->role === 'siswa')
@@ -134,4 +151,63 @@
 </div>
 @endif
 
+<script>
+function getCardTemplate(label, kode) {
+    return `
+        <div class="col-12 col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="mb-2 text-center">${label}</h6>
+                    <canvas id="chart-${kode}"></canvas>
+                </div>
+            </div>
+        </div>
+    `
+}
+
+function createChart(elementId, items, label) {
+    const ctx = document.getElementById(elementId);
+    const data = {
+    labels: [
+        'MB',
+        'MSH',
+        'BSB'
+    ],
+    datasets: [{
+        label,
+        data: items,
+        backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)'
+        ],
+        hoverOffset: 4
+    }]
+    };
+
+    new Chart(ctx, {
+    type: 'doughnut',
+    data,
+    options: {
+        scales: {
+        y: {
+            beginAtZero: true
+        }
+        }
+    }
+    });
+}
+
+const aspeks = {!! json_encode($aspeks) !!};
+const parentElement = document.getElementById('my-charts')
+let childElement = ''
+aspeks.forEach(item => {
+    childElement += getCardTemplate(item.nama_aspek, item.kode)
+})
+parentElement.innerHTML = childElement
+const data = [0, 0, 0]
+aspeks.forEach(item => {
+    createChart(`chart-${item.kode}`, data, item.nama_aspek)
+})
+</script>
 @endsection

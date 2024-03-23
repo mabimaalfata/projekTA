@@ -18,6 +18,7 @@
     <link id="pagestyle" href="{{ asset('templates/dashboard/assets/css/material-dashboard.css?v=3.0.4') }}"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
