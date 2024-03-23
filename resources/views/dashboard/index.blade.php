@@ -90,7 +90,7 @@
     <div class="w-100 d-flex flex-col flex-md-row align-items-center mb-4">
         <h5>Perkembangan Murid</h5>
         <div class="input-group input-group-outline ms-3" style="max-width: 150px">
-            <select class="form-control" name="year">
+            <select id="filter-chart" class="form-control" name="year">
                 @for ($i = 1980; $i <= date('Y'); $i++)
                     <option value="{{ $i }}" {{ $i == date('Y') ? 'selected' : '' }}>{{ $i }}</option>
                 @endfor
@@ -155,7 +155,7 @@
 function getCardTemplate(label, kode) {
     return `
         <div class="col-12 col-md-4">
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-body">
                     <h6 class="mb-2 text-center">${label}</h6>
                     <canvas id="chart-${kode}"></canvas>
@@ -170,7 +170,7 @@ function createChart(elementId, items, label) {
     const data = {
     labels: [
         'MB',
-        'MSH',
+        'BSH',
         'BSB'
     ],
     datasets: [{
@@ -185,7 +185,7 @@ function createChart(elementId, items, label) {
     }]
     };
 
-    new Chart(ctx, {
+    return new Chart(ctx, {
     type: 'doughnut',
     data,
     options: {
@@ -198,6 +198,23 @@ function createChart(elementId, items, label) {
     });
 }
 
+const manageCharts = {}
+async function getDatasets(year) {
+    try {
+        const endpoint = {!! json_encode(route('charts')) !!};
+        const query = !!year ? `?year=${year}` : ''
+        const res = await fetch(endpoint + query)
+        const data = await res.json()
+        for (item in data) {
+            const newData = [data[item].mb, data[item].bsh, data[item].bsb]
+            manageCharts[item].data.datasets[0].data = newData
+            manageCharts[item].update()
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 const aspeks = {!! json_encode($aspeks) !!};
 const parentElement = document.getElementById('my-charts')
 let childElement = ''
@@ -207,7 +224,13 @@ aspeks.forEach(item => {
 parentElement.innerHTML = childElement
 const data = [0, 0, 0]
 aspeks.forEach(item => {
-    createChart(`chart-${item.kode}`, data, item.nama_aspek)
+    manageCharts[`${item.kode}`] = createChart(`chart-${item.kode}`, data, item.nama_aspek)
+})
+getDatasets()
+
+const filterChart = document.getElementById('filter-chart')
+filterChart.addEventListener('change', function(e) {
+    getDatasets(e.target.value)
 })
 </script>
 @endsection

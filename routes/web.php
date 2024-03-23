@@ -33,6 +33,8 @@ Route::group(['prefix' => '/'], function() {
     })->name('login');
 });
 
+Route::get('/charts', [Dashboard::class, 'charts'])->name('charts');
+
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
     Route::get('/', [Dashboard::class, 'index'])->name('dashboard');
     Route::get('/users', [Dashboard::class, 'users'])->name('users');

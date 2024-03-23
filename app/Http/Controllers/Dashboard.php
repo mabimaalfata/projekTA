@@ -45,6 +45,56 @@ class Dashboard extends Controller
         ]);
     }
 
+    public function charts(Request $request)
+    {
+        if ($request->has('year')) {
+            $year = $request->input('year');
+        } else {
+            $year = Carbon::now()->year;
+        }
+
+        $aspek_kode = Aspek::select('kode')->get();
+        $query = Nilai::query();
+
+        if (Auth::user()->role === 'guru') {
+            $guru = Biodata::where('user_id', Auth::user()->id)
+                ->select('kelas')->first();
+
+            $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
+                ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
+                ->join('biodata', 'biodata.user_id', '=', 'nilai_siswa.user_id')
+                ->where('biodata.kelas', $guru->kelas)
+                ->where('nilai_siswa.awal_ajaran', $year);
+        }
+        if (Auth::user()->role === 'admin') {
+            $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
+            ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
+            ->where('nilai_siswa.awal_ajaran', $year);
+        }
+
+        $data = $query->get();
+        $result = [];
+        foreach ($aspek_kode as $aspek) {
+            $result[$aspek->kode] = [
+                'mb' => 0,
+                'bsh' => 0,
+                'bsb' => 0,
+            ];
+            foreach ($data as $item) {
+                if ($item->kode === $aspek->kode && $item->nilai === 'mb') {
+                    $result[$aspek->kode]['mb']++;
+                }
+                if ($item->kode === $aspek->kode && $item->nilai === 'bsh') {
+                    $result[$aspek->kode]['bsh']++;
+                }
+                if ($item->kode === $aspek->kode && $item->nilai === 'bsb') {
+                    $result[$aspek->kode]['bsb']++;
+                }
+            }
+        }
+        return response()->json($result);
+    }
+
     public function users(Request $request)
     {
         $query = Biodata::query();
