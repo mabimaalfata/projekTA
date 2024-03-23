@@ -7,6 +7,47 @@
         </div>
     </div>
     <div class="card-body px-2 pb-2">
+    <div class="mx-3">
+            <form method="GET" action="{{route('nilai')}}">
+                <div class="row">
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <div class="input-group input-group-outline">
+                            <label class="form-label">Cari</label>
+                            <input name="search" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <div class="input-group input-group-outline">
+                            <select name="agama" class="form-control" id="agama">
+                                <option value="">Pilih agama</option>
+                                <option value="islam">Islam</option>
+                                <option value="kristen">Kristen</option>
+                                <option value="budha">Budha</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="konghucu">Konghucu</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-2">
+                        <div class="input-group input-group-outline">
+                            <select name="kelamin" class="form-control" id="kelamin">
+                                <option value="">Pilih jenis kelamin</option>
+                                <option value="l">Laki-laki</option>
+                                <option value="p">Perempuan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-auto">
+                        <button type="submit" class="btn btn-info">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                        <button id="reset-filter" type="reset" class="btn btn-secondary">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="table-responsive p-0">
             <table class="table align-items-center justify-content-center mb-0">
                 <thead>
@@ -82,4 +123,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.querySelector('#reset-filter').addEventListener('click', function() {
+        window.location.href = '{{ route('nilai') }}';
+    });
+</script>
 @endsection

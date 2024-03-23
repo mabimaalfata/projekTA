@@ -289,16 +289,38 @@ class Dashboard extends Controller
         return redirect('dashboard/poin-penilaian')->with('success', 'Berhasil menghapus data poin penilaian!');
     }
 
-    public function nilai() {
+    public function nilai(Request $request) {
         $guru_id = Auth::user()->id;
         $guru = Biodata::find($guru_id);
 
-        $siswa = Biodata::where('role', '=', 'siswa')
-            ->where('kelas', '=', $guru->kelas)
-            ->join('users', 'users.id', '=', 'biodata.user_id')
-            ->select('biodata.*', 'users.id', 'users.nama')
-            ->paginate(10);
-        return view('dashboard.nilai', ['all_siswa' => $siswa]);
+        $query = Biodata::query();
+        $query->join('users', 'users.id', '=', 'biodata.user_id')
+            ->where('users.role', 'siswa')
+            ->where('biodata.kelas', $guru->kelas);
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($query) use ($search) {
+                $query->orWhere('biodata.alamat', 'like', "%{$search}%")
+                    ->orWhere('biodata.tanggal_lahir', 'like', "%{$search}%")
+                    ->orWhere('biodata.tempat_lahir', 'like', "%{$search}%")
+                    ->orWhere('biodata.nisn', 'like', "%{$search}%")
+                    ->orWhere('biodata.nip', 'like', "%{$search}%")
+                    ->orWhere('users.username', 'like', "%{$search}%")
+                    ->orWhere('users.nama', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->agama) {
+            $query->where('biodata.agama', $request->agama);
+        }
+
+        if ($request->kelamin) {
+            $query->where('biodata.jenis_kelamin', $request->kelamin);
+        }
+
+        $users = $query->paginate(10);
+        return view('dashboard.nilai', ['all_siswa' => $users]);
     }
 
     public function nilai_detail($user_id) {
