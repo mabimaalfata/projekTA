@@ -44,11 +44,47 @@ class Dashboard extends Controller
         ]);
     }
 
-    public function users() {
-        // $users = Biodata::paginate(10);
-        $users = Biodata::join('users', 'users.id', '=', 'biodata.user_id')
-            ->select('users.nama', 'users.username', 'users.role', 'biodata.*')
-            ->paginate(10);
+    public function users(Request $request)
+    {
+        $query = Biodata::query();
+        $query->join('users', 'users.id', '=', 'biodata.user_id');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($query) use ($search) {
+                $query->orWhere('biodata.alamat', 'like', "%{$search}%")
+                    ->orWhere('biodata.tanggal_lahir', 'like', "%{$search}%")
+                    ->orWhere('biodata.tempat_lahir', 'like', "%{$search}%")
+                    ->orWhere('biodata.nisn', 'like', "%{$search}%")
+                    ->orWhere('biodata.nip', 'like', "%{$search}%")
+                    ->orWhere('users.username', 'like', "%{$search}%")
+                    ->orWhere('users.nama', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->role) {
+            if ($request->user()->role == 'guru') {
+                $role = 'murid';
+            } else {
+                $role = $request->role;
+            }
+
+            $query->where('users.role', $role);
+        }
+
+        if ($request->classroom) {
+            $query->where('biodata.kelas', $request->classroom);
+        }
+
+        if ($request->agama) {
+            $query->where('biodata.agama', $request->agama);
+        }
+
+        if ($request->kelamin) {
+            $query->where('biodata.jenis_kelamin', $request->kelamin);
+        }
+
+        $users = $query->paginate(10);
 
         return view('dashboard.users', ['users' => $users]);
     }
@@ -86,7 +122,7 @@ class Dashboard extends Controller
 
         return redirect('dashboard/users')->with('success', 'Berhasil membuat akun baru!');
     }
-    
+
     public function remove_account(Request $request, $biodata_id) {
         $biodata = Biodata::find($biodata_id);
         $user_id = $biodata->user_id;
@@ -101,7 +137,7 @@ class Dashboard extends Controller
     }
 
     public function save_photo($request) {
-        $imageName = time().'.'.$request->poto->extension();  
+        $imageName = time().'.'.$request->poto->extension();
         $request->poto->move(public_path('/storage/images'), $imageName);
         return $imageName;
     }
@@ -256,7 +292,7 @@ class Dashboard extends Controller
     public function nilai() {
         $guru_id = Auth::user()->id;
         $guru = Biodata::find($guru_id);
-        
+
         $siswa = Biodata::where('role', '=', 'siswa')
             ->where('kelas', '=', $guru->kelas)
             ->join('users', 'users.id', '=', 'biodata.user_id')
@@ -327,7 +363,7 @@ class Dashboard extends Controller
             $imageName = $this->save_photo($request);
             $biodata->poto = $imageName;
         }
-        
+
         if($request->has('nip')) {
             $biodata->nip = $request->nip;
         }
