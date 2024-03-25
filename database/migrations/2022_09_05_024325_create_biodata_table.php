@@ -21,6 +21,8 @@ return new class extends Migration
             $table->bigInteger('nip')->unique()->nullable()->default(null);
             $table->bigInteger('nisn')->unique()->nullable()->default(null);
             $table->string('tempat_lahir')->nullable()->default(null);
+            $table->string('angkatan')->nullable()->default(null);
+            $table->string('wali')->nullable()->default(null);
             $table->date('tanggal_lahir')->nullable()->default(null);
             $table->enum('jenis_kelamin', ['p', 'l'])->nullable()->default(null);
             $table->string('poto')->nullable()->default(null);

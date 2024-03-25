@@ -61,6 +61,8 @@
                             Lahir</th>
                         <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Jenis
                             Kelamin</th>
+                        <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Angkatan</th>
+                        <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Wali</th>
                         <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Agama</th>
                         <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Kelas</th>
                         <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Alamat</th>
@@ -96,6 +98,12 @@
                         <td>
                             <span
                                 class="text-xs font-weight-bold">{{ $user->jenis_kelamin ? strtoupper($user->jenis_kelamin) : '-' }}</span>
+                        </td>
+                        <td>
+                            <span class="text-xs font-weight-bold">{{ $user->angkatan ? $user->angkatan : '-' }}</span>
+                        </td>
+                        <td>
+                            <span class="text-xs font-weight-bold">{{ $user->wali ? $user->wali : '-' }}</span>
                         </td>
                         <td>
                             <span class="text-xs font-weight-bold">{{ $user->agama ? $user->agama : '-' }}</span>

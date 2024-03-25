@@ -24,6 +24,7 @@
                                 <option value="">Pilih role akun</option>
                                 <option value="siswa">Siswa</option>
                                 <option value="guru">Guru</option>
+                                <option value="kepala-sekolah">Kepala Sekolah</option>
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
@@ -87,6 +88,8 @@
                             Lahir</th>
                         <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Jenis
                             Kelamin</th>
+                        <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Angkatan</th>
+                        <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Wali</th>
                         <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Agama</th>
                         <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Kelas</th>
                         <th class="text-uppercase text-dark text-xxs font-weight-bolder ps-2">Alamat</th>
@@ -131,6 +134,12 @@
                         <td>
                             <span
                                 class="text-xs font-weight-bold">{{ $user->jenis_kelamin ? strtoupper($user->jenis_kelamin) : '-' }}</span>
+                        </td>
+                        <td>
+                            <span class="text-xs font-weight-bold">{{ $user->angkatan ? $user->angkatan : '-' }}</span>
+                        </td>
+                        <td>
+                            <span class="text-xs font-weight-bold">{{ $user->wali ? $user->wali : '-' }}</span>
                         </td>
                         <td>
                             <span class="text-xs font-weight-bold">{{ $user->agama ? $user->agama : '-' }}</span>
@@ -220,15 +229,29 @@
             <div class="row">
                 <h6>Biodata</h6>
                 <div class="col-md-4">
+                    <label class="form-label">NISN</label>
                     <div class="input-group input-group-outline my-3">
-                        <label class="form-label">NISN</label>
                         <input name="nisn" type="number" class="form-control">
                     </div>
                 </div>
                 <div class="col-md-4">
+                    <label class="form-label">NIP</label>
                     <div class="input-group input-group-outline my-3">
-                        <label class="form-label">NIP</label>
                         <input name="nip" type="number" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label">Tahun Angkatan</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input name="angkatan" type="number" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Nama Wali</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input name="wali" type="text" class="form-control">
                     </div>
                 </div>
             </div>

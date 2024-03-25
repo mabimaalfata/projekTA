@@ -25,7 +25,7 @@ class Dashboard extends Controller
                 ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
                 ->select('nilai_siswa.*', 'poin_aspek.nama_poin', 'aspek.nama_aspek')
                 ->paginate(10);
-            return view('dashboard.index', ['nilai' => $nilai]);
+            return view('dashboard.index', ['nilai' => $nilai, 'aspeks' => '']);
         }
 
         $total_siswa = User::where('role', '=', 'siswa')->count();
@@ -47,8 +47,9 @@ class Dashboard extends Controller
 
     public function charts(Request $request)
 {
-    $year = $request->query('year');
+    $semester = $request->query('semester');
     $classroom = $request->query('classroom');
+    $angkatan = $request->query('angkatan');
 
     $aspek_kode = Aspek::select('kode')->get();
     $query = Nilai::query();
@@ -68,12 +69,16 @@ class Dashboard extends Controller
             ->join('biodata', 'biodata.user_id', '=', 'nilai_siswa.user_id');
     }
 
-    if ($year != '') {
-        $query->where('nilai_siswa.awal_ajaran', $year);
+    if ($semester != '') {
+        $query->where('nilai_siswa.semester', $semester);
     }
 
     if ($classroom != '') {
         $query->where('biodata.kelas', $classroom);
+    }
+
+    if ($angkatan != '') {
+        $query->where('biodata.angkatan', $angkatan);
     }
 
     $data = $query->get();
@@ -99,68 +104,10 @@ class Dashboard extends Controller
     return response()->json($result);
 }
 
-    // public function charts(Request $request)
-    // {
-    //     if ($request->has('year')) {
-    //         $year = $request->input('year');
-    //     } else {
-    //         $year = '';
-    //     }
-
-    //     if ($request->has('classroom')) {
-    //         $classroom = $request->input('classroom');
-    //     } else {
-    //         $classroom = '';
-    //     }
-
-    //     $aspek_kode = Aspek::select('kode')->get();
-    //     $query = Nilai::query();
-
-    //     if (Auth::user()->role === 'guru') {
-    //         $guru = Biodata::where('user_id', Auth::user()->id)
-    //             ->select('kelas')->first();
-
-    //         $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
-    //             ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
-    //             ->join('biodata', 'biodata.user_id', '=', 'nilai_siswa.user_id')
-    //             ->where('biodata.kelas', $guru->kelas)
-    //             ->where('nilai_siswa.awal_ajaran', $year);
-    //     }
-    //     if (Auth::user()->role === 'admin' || Auth::user()->role === 'kepala-sekolah') {
-    //         $query->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
-    //         ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
-    //         ->join('biodata', 'biodata.user_id', '=', 'nilai_siswa.user_id')
-    //         ->where('biodata.kelas', $classroom)
-    //         ->orWhere('nilai_siswa.awal_ajaran', $year);
-    //     }
-
-    //     $data = $query->get();
-    //     $result = [];
-    //     foreach ($aspek_kode as $aspek) {
-    //         $result[$aspek->kode] = [
-    //             'mb' => 0,
-    //             'bsh' => 0,
-    //             'bsb' => 0,
-    //         ];
-    //         foreach ($data as $item) {
-    //             if ($item->kode === $aspek->kode && $item->nilai === 'mb') {
-    //                 $result[$aspek->kode]['mb']++;
-    //             }
-    //             if ($item->kode === $aspek->kode && $item->nilai === 'bsh') {
-    //                 $result[$aspek->kode]['bsh']++;
-    //             }
-    //             if ($item->kode === $aspek->kode && $item->nilai === 'bsb') {
-    //                 $result[$aspek->kode]['bsb']++;
-    //             }
-    //         }
-    //     }
-    //     return response()->json($result);
-    // }
-
     public function users(Request $request)
     {
-        $query = Biodata::query();
-        $query->join('users', 'users.id', '=', 'biodata.user_id');
+        $query = User::query();
+        $query->join('biodata', 'biodata.user_id', '=', 'users.id');
 
         if (Auth::user()->role === 'kepala-sekolah') {
             $query->whereIn('users.role', ['guru', 'siswa']);
@@ -172,6 +119,8 @@ class Dashboard extends Controller
                 $query->orWhere('biodata.alamat', 'like', "%{$search}%")
                     ->orWhere('biodata.tanggal_lahir', 'like', "%{$search}%")
                     ->orWhere('biodata.tempat_lahir', 'like', "%{$search}%")
+                    ->orWhere('biodata.angkatan', 'like', "%{$search}%")
+                    ->orWhere('biodata.wali', 'like', "%{$search}%")
                     ->orWhere('biodata.nisn', 'like', "%{$search}%")
                     ->orWhere('biodata.nip', 'like', "%{$search}%")
                     ->orWhere('users.username', 'like', "%{$search}%")
@@ -231,6 +180,8 @@ class Dashboard extends Controller
             'tempat_lahir' => $request->tempat_lahir,
             'tanggal_lahir' => $request->tanggal_lahir,
             'jenis_kelamin' => $request->jenis_kelamin,
+            'angkatan' => $request->angkatan,
+            'wali' => $request->wali,
             'poto' => $potoUrl,
             'agama' => $request->agama,
             'kelas' => $request->kelas,
@@ -244,13 +195,11 @@ class Dashboard extends Controller
         $biodata = Biodata::find($biodata_id);
         $user_id = $biodata->user_id;
         $photo = $biodata->poto;
-        $removed = $this->remove_photo($photo);
+        $this->remove_photo($photo);
 
-        if($removed) {
-            Biodata::find($biodata_id)->delete();
-            user::find($user_id)->delete();
-            return redirect('dashboard/users')->with('succces', 'Berhasil menghapus akun baru!');
-        }
+        Biodata::find($biodata_id)->delete();
+        user::find($user_id)->delete();
+        return redirect('dashboard/users')->with('succces', 'Berhasil menghapus akun baru!');
     }
 
     public function save_photo($request) {
@@ -285,7 +234,7 @@ class Dashboard extends Controller
 
     public function userEdit_action(Request $request, $user_id, $biodata_id) {
         $user = User::find($user_id);
-        $biodata = Biodata::find($user_id);
+        $biodata = Biodata::find($biodata_id);
 
         if($request->password && $request->password !== '') {
             $user->password = Hash::make($request->password);
@@ -310,6 +259,8 @@ class Dashboard extends Controller
         $biodata->tempat_lahir = $request->tempat_lahir;
         $biodata->tanggal_lahir = $request->tanggal_lahir;
         $biodata->jenis_kelamin = $request->jenis_kelamin;
+        $biodata->angkatan = $request->angkatan;
+        $biodata->wali = $request->wali;
         $biodata->agama = $request->agama;
         $biodata->kelas = $request->kelas;
         $biodata->alamat = $request->alamat;
@@ -482,17 +433,18 @@ class Dashboard extends Controller
     public function profile($user_id) {
         $biodata = Biodata::where('user_id', '=', $user_id)
             ->join('users', 'users.id', '=', 'biodata.user_id')
+            ->select('biodata.*', 'users.id as user_id', 'users.nama')
             ->get();
+
         return view('dashboard.profile', ['biodata' => $biodata[0]]);
     }
 
     public function profile_update(Request $request, $user_id, $biodata_id) {
         $user = User::find($user_id);
-        $biodata = Biodata::find($user_id);
+        $biodata = Biodata::find($biodata_id);
 
         $user->nama = $request->nama;
         $user->update();
-
 
         if($request->has('poto')) {
             $request->validate([
@@ -521,8 +473,9 @@ class Dashboard extends Controller
         return redirect('dashboard/profile/'.$user_id)->with('success', 'Profile berhasil diperbaharui!');
     }
 
-    public function print($user_id) {
+    public function print($user_id, $semester) {
         $nilai = Nilai::where('user_id', '=', $user_id)
+            ->where('semester', '=', $semester)
             ->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
             ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
             ->select('nilai_siswa.*', 'poin_aspek.nama_poin', 'aspek.nama_aspek')

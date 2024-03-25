@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('poin_aspek', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_poin');
+            $table->longText('nama_poin');
             $table->unsignedBigInteger('aspek_id');
             $table->index('aspek_id');
             $table->foreign('aspek_id')->references('id')->on('aspek')->onDelete('cascade');

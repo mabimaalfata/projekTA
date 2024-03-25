@@ -22,7 +22,7 @@
             <td style="border: 1px solid #aaa; padding: 7px;">{{ $item->semester }}</td>
             <td style="border: 1px solid #aaa; padding: 7px;">{{ $item->awal_ajaran }}/{{ $item->akhir_ajaran }}</td>
             <td style="border: 1px solid #aaa; padding: 7px;">{{ $item->nama_aspek }}</td>
-            <td style="border: 1px solid #aaa; padding: 7px;">{{ $item->nama_poin }}</td>
+            <td style="border: 1px solid #aaa; padding: 7px; text-overflow: wrap; max-width: 150px;">{{ $item->nama_poin }}</td>
             <td style="border: 1px solid #aaa; padding: 7px;">
                 {{ $item->nilai === 'mb' ? 'Mulai Berkembang' : ($item->nilai === 'bsh' ? 'Berkembang Sesuai Harapan' : ($item->nilai === 'bsb' ? 'Berkembang Sangat Baik' : '-')) }}
             </td>

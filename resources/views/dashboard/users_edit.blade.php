@@ -40,21 +40,31 @@
                             <option value="">Pilih role akun</option>
                             <option value="siswa">Siswa</option>
                             <option value="guru">Guru</option>
+                            <option value="kepala-sekolah">Kepala Sekolah</option>
                             <option selected value="admin">Admin</option>
                             @elseif($user->role === 'guru')
                             <option value="">Pilih role akun</option>
                             <option value="siswa">Siswa</option>
                             <option selected value="guru">Guru</option>
+                            <option value="kepala-sekolah">Kepala Sekolah</option>
                             <option value="admin">Admin</option>
                             @elseif($user->role === 'siswa')
                             <option value="">Pilih role akun</option>
                             <option selected value="siswa">Siswa</option>
+                            <option value="guru">Guru</option>
+                            <option value="kepala-sekolah">Kepala Sekolah</option>
+                            <option value="admin">Admin</option>
+                            @elseif($user->role === 'kepala-sekolah')
+                            <option value="">Pilih role akun</option>
+                            <option selected value="kepala-sekolah">Kepala Sekolah</option>
+                            <option value="siswa">Siswa</option>
                             <option value="guru">Guru</option>
                             <option value="admin">Admin</option>
                             @else
                             <option value="">Pilih role akun</option>
                             <option value="siswa">Siswa</option>
                             <option value="guru">Guru</option>
+                            <option value="kepala-sekolah">Kepala Sekolah</option>
                             <option value="admin">Admin</option>
                             @endif
                         </select>
@@ -87,6 +97,20 @@
                     <label class="form-label">NIP</label>
                     <div class="input-group input-group-outline my-3">
                         <input value="{{ $user->nip }}" name="nip" type="number" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label">Tahun Angkatan</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input value="{{ $user->angkatan }}" name="angkatan" type="number" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Nama Wali</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input  value="{{ $user->wali }}" name="wali" type="text" class="form-control">
                     </div>
                 </div>
             </div>

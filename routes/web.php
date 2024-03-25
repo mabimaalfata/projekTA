@@ -64,10 +64,10 @@ Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
     Route::get('/profile/{user_id}', [Dashboard::class, 'profile'])->name('profile');
     Route::put('/profile/{user_id}/{biodata_id}', [Dashboard::class, 'profile_update'])->name('profile.update');
 
-    Route::get('print/{user_id}', [Dashboard::class, 'print'])->name('print');
+    Route::get('print/{user_id}/{semester}', [Dashboard::class, 'print'])->name('print');
 });
 
 Route::group(['prefix' => 'auth'], function() {
     Route::post('login', [AuthController::class, 'login'])->name('login.action');
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout.action')->middleware('checkRole:admin,guru,siswa');
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout.action')->middleware('checkRole:admin,guru,siswa,kepala-sekolah');
 });

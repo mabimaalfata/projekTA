@@ -17,6 +17,8 @@ class Biodata extends Model
         'tempat_lahir',
         'tanggal_lahir',
         'jenis_kelamin',
+        'angkatan',
+        'wali',
         'poto',
         'agama',
         'kelas',

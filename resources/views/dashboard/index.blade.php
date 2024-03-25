@@ -90,7 +90,14 @@
     <div class="w-100 d-flex flex-col flex-md-row align-items-center mb-4">
         <h5>Perkembangan Murid</h5>
         <div class="input-group input-group-outline ms-3" style="max-width: 150px">
-            <select id="filter-chart" class="form-control" name="year">
+            <select id="filter-chart" class="form-control" name="semester">
+                <option value="">Semua Semester</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+        </div>
+        <div class="input-group input-group-outline ms-3" style="max-width: 150px">
+            <select id="filter-angkatan" class="form-control" name="angkatan">
                 <option value="">Semua Tahun</option>
                 @for ($i = 2000; $i <= date('Y'); $i++)
                     <option value="{{ $i }}">{{ $i }}</option>
@@ -100,15 +107,14 @@
                 @endfor
             </select>
         </div>
-        @if (Auth::user()->role === 'admin' || Auth::user()->role === 'kepala-sekolah')
-        <div class="input-group input-group-outline ms-3" style="max-width: 150px">
+        <div class="input-group input-group-outline ms-3
+        {{ (Auth::user()->role === 'admin' || Auth::user()->role === 'kepala-sekolah') ? '' : 'd-none' }}" style="max-width: 150px">
             <select id="filter-classroom" class="form-control" name="classroom">
                 <option value="">Semua Kelas</option>
                 <option value="A">Kelas A</option>
                 <option value="B">Kelas B</option>
             </select>
         </div>
-        @endif
     </div>
     <div id="my-charts" class="row">
     </div>
@@ -123,9 +129,13 @@
         </div>
     </div>
     <div class="card-body px-4 pb-2">
-        <a target="_blank" href="dashboard/print/{{Auth::user()->id}}" class="btn btn-outline-info">
+        <a target="_blank" href="dashboard/print/{{Auth::user()->id}}/1" class="btn btn-outline-info me-2">
             <i class="fa-solid fa-print"></i>
-            Print
+            Print Semester 1
+        </a>
+        <a target="_blank" href="dashboard/print/{{Auth::user()->id}}/2" class="btn btn-outline-info">
+            <i class="fa-solid fa-print"></i>
+            Print Semester 2
         </a>
         <div class="table-responsive p-0">
             <div class="table-responsive">
@@ -209,16 +219,15 @@ function createChart(elementId, items, label) {
 }
 
 const queries = {
-    year: '',
+    semester: '',
     classRoom: '',
+    angkatan: '',
 }
 const manageCharts = {}
 async function getDatasets() {
     try {
         const endpoint = {!! json_encode(route('charts')) !!};
-        // const year = !!queries.year ? `year=${queries.year}` : ''
-        // const classRoom = !!queries.classRoom ? `&classroom=${queries.classRoom}` : ''
-        const res = await fetch(endpoint + `?year=${queries.year}&classroom=${queries.classRoom}`)
+        const res = await fetch(endpoint + `?semester=${queries.semester}&classroom=${queries.classRoom}&angkatan=${queries.angkatan}`)
         const data = await res.json()
         for (item in data) {
             const newData = [data[item].mb, data[item].bsh, data[item].bsb]
@@ -229,29 +238,36 @@ async function getDatasets() {
         console.log(error)
     }
 }
-
-const aspeks = {!! json_encode($aspeks) !!};
-const parentElement = document.getElementById('my-charts')
-let childElement = ''
-aspeks.forEach(item => {
-    childElement += getCardTemplate(item.nama_aspek, item.kode)
-})
-parentElement.innerHTML = childElement
-const data = [0, 0, 0]
-aspeks.forEach(item => {
-    manageCharts[`${item.kode}`] = createChart(`chart-${item.kode}`, data, item.nama_aspek)
-})
-getDatasets()
-
-const filterChart = document.getElementById('filter-chart')
-filterChart.addEventListener('change', function(e) {
-    queries.year = e.target.value
+const role = '{!! Auth::user()->role !!}'
+if (role === 'admin' || role === 'kepala-sekolah' || role === 'guru') {
+    const aspeks = {!! json_encode($aspeks) !!};
+    const parentElement = document.getElementById('my-charts')
+    let childElement = ''
+    aspeks.forEach(item => {
+        childElement += getCardTemplate(item.nama_aspek, item.kode)
+    })
+    parentElement.innerHTML = childElement
+    const data = [0, 0, 0]
+    aspeks.forEach(item => {
+        manageCharts[`${item.kode}`] = createChart(`chart-${item.kode}`, data, item.nama_aspek)
+    })
     getDatasets()
-})
-const filterClassroom = document.getElementById('filter-classroom')
-filterClassroom.addEventListener('change', function(e) {
-    queries.classRoom = e.target.value
-    getDatasets()
-})
+
+    const filterChart = document.getElementById('filter-chart')
+    filterChart.addEventListener('change', function(e) {
+        queries.semester = e.target.value
+        getDatasets()
+    })
+    const filterClassroom = document.getElementById('filter-classroom')
+    filterClassroom.addEventListener('change', function(e) {
+        queries.classRoom = e.target.value
+        getDatasets()
+    })
+    const filterAngkatan = document.getElementById('filter-angkatan')
+    filterAngkatan.addEventListener('change', function(e) {
+        queries.angkatan = e.target.value
+        getDatasets()
+    })
+}
 </script>
 @endsection
