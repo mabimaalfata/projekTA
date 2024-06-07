@@ -43,7 +43,7 @@
                             <form action="{{ url('dashboard/poin-penilaian/'.$poin->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-link text-primary mb-0">
+                                <button type="submit" class="btn btn-link text-primary mb-0"onclick="return confirm('Apakah Anda ingin menghapus?')">    
                                     Hapus
                                 </button>
                             </form>

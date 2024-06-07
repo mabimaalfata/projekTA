@@ -158,10 +158,11 @@
                             <form action="{{ url('dashboard/users/'.$user->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-link text-primary mb-0">
-                                    Hapus
+                                <button type="submit" class="btn btn-link text-primary mb-0" onclick="return confirm('Apakah Anda ingin menghapus?')">
+                                  Hapus
                                 </button>
-                            </form>
+                              </form>
+                              
                             @endif
                         </td>
                     </tr>
@@ -329,4 +330,17 @@
         window.location.href = '{{ route('users') }}';
     });
 </script>
+<script>
+    function handleDeleteUser() {
+      // Display a confirmation dialog with a polite message
+      if (confirm('Are you sure you want to delete this user?')) {
+        // If confirmed, submit the form
+        return true;
+      } else {
+        // If canceled, prevent form submission
+        return false;
+      }
+    }
+    </script>
+    
 @endsection

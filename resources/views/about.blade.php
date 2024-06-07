@@ -5,7 +5,7 @@
 <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center">
 
-        <h1 class="logo me-auto"><a href="/">Paud Teratai</a></h1>
+        <h1 class="logo me-auto"><a href="/"><img src="assets/landing/img/hero-bg.jpg" >TK ISLAM HASANUDDIN</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
@@ -18,15 +18,14 @@
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->
 
-        <a href="courses.html" class="get-started-btn" data-bs-toggle="modal" data-bs-target="#masuk">Masuk</a>
-    </div>
+        <a href="{{ route('login') }}" class="get-started-btn">{{Auth::check() ? 'Dashboard' : 'Masuk'}}</a>    </div>
 </header><!-- End Header -->
 <main id="main">
     <!-- ======= Breadcrumbs ======= -->
     <div class="breadcrumbs" data-aos="fade-in">
         <div class="container">
             <h2>Tentang Kami</h2>
-            <p>"Membentuk anak anak yang cerdas dan berkembang sesuai dengan usianya". </p>
+            <p>"Menyiapkan peserta didik untuk jenjang lebih tinggi dengan pengembangan potensi optimal dan nilai-nilai Islami yang kuat." </p>
         </div>
     </div><!-- End Breadcrumbs -->
 
@@ -45,7 +44,7 @@
                     <ul>
                         <li>
                             <h4><i class="bi bi-check-circle"></i>
-                                Terwujudnya peningkatan pengelolaan pendapatan asli daerah yang professional.</h4>
+                                Membentuk generasi yang bertaqwa, berakhlak, terampil, mandiri, kreatif, sehingga mampu menjadi individu yang berkualitas dan berprestasi dalam dunia Pendidikan.</h4>
                         </li>
                     </ul>
                     <p class="fst-italic">
@@ -54,11 +53,15 @@
                     <ul>
                         <li>
                             <h4><i class="bi bi-check-circle"></i>
-                                Meningkatkan kualitas pengelolaan pendapatan daerah.</h4>
+                                Mengembangkan pembelajaran Islami.</h4>
                         </li>
                         <li>
                             <h4><i class="bi bi-check-circle"></i>
-                                Meningkatkan kualitas pelayanan pajak daerah.</h4>
+                                Menciptakan rasa aman dalam kehidupan sehari-hari melalui keteladanan dan kebiasaan.</h4>
+                        </li>
+                        <li>
+                            <h4><i class="bi bi-check-circle"></i>
+                                Mengembangkan bakat minat anak dan minat kreativitas anak.</h4>
                         </li>
                     </ul>
 
@@ -107,11 +110,11 @@
                     <div class="col-lg-3 col-md-6 footer-contact">
                         <h3>Alamat</h3>
                         <p>
-                            Jl. Cilandak No.148-8 <br>
-                            Sarijadi, Kec. Sukasari<br>
-                            Kota Bandung, Jawa Barat 40151 <br><br>
-                            <strong>Phone:</strong> +1 5589 55488 55<br>
-                            <strong>Email:</strong> info@example.com<br>
+                            Jl. Brotojoyo Bar. II No.26 <br>
+                            Panggung Kidul, Kec. Semarang Utara<br>
+                            Kota Semarang, Jawa Tengah 50178 <br><br>
+                            <strong>Phone:</strong> 0821 3486 3529<br>
+                            <strong>Email:</strong> tk.islamhasanuddin@gmail.com <br>
                         </p>
                     </div>
                 </div>
@@ -122,7 +125,7 @@
 
             <div class="me-md-auto text-center text-md-start">
                 <div class="copyright">
-                    &copy; Copyright <strong><span>PaudTeratai</span></strong>. All Rights Reserved
+                    &copy; Copyright <strong><span>TKIslamHasanuddin</span></strong>. All Rights Reserved
                 </div>
                 <div class="credits">
                     <!-- All the links in the footer should remain intact. -->
@@ -132,10 +135,7 @@
                     <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
                 </div>
             </div>
-            <div class="social-links text-center text-md-right pt-3 pt-md-0">
-                <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-                <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
-            </div>
+
         </div>
     </footer><!-- End Footer -->
 

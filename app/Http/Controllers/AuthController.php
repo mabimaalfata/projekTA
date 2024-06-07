@@ -18,11 +18,8 @@ class AuthController extends Controller
             return redirect()->intended('dashboard')
                 ->withSuccess('Logged-in');
         }
-
-        return back()->withErrors([
-            'password' => 'Wrong username or password',
-        ]);
-    }
+        return back()->with('login_error','Wrong username or password');
+         }
 
     public function logout(Request $request) {
         try {

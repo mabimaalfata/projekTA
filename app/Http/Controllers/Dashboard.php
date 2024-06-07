@@ -24,7 +24,7 @@ class Dashboard extends Controller
                 ->join('poin_aspek', 'poin_aspek.id', '=', 'nilai_siswa.poin_id')
                 ->join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
                 ->select('nilai_siswa.*', 'poin_aspek.nama_poin', 'aspek.nama_aspek')
-                ->paginate(10);
+                ->paginate(20);
             return view('dashboard.index', ['nilai' => $nilai, 'aspeks' => '']);
         }
 
@@ -150,7 +150,7 @@ class Dashboard extends Controller
             $query->where('biodata.jenis_kelamin', $request->kelamin);
         }
 
-        $users = $query->paginate(10);
+        $users = $query->paginate(15);
 
         return view('dashboard.users', ['users' => $users]);
     }
@@ -270,7 +270,7 @@ class Dashboard extends Controller
     }
 
     public function aspek() {
-        $aspeks = Aspek::paginate(5);
+        $aspeks = Aspek::paginate(20);
 
         return view('dashboard.aspek', ['aspeks' => $aspeks]);
     }
@@ -314,12 +314,25 @@ class Dashboard extends Controller
         $aspeks = Aspek::all();
         $poins = PoinAspek::join('aspek', 'aspek.id', '=', 'poin_aspek.aspek_id')
             ->select('poin_aspek.*', 'aspek.nama_aspek', 'aspek.kode')
-            ->paginate(5);
+            ->paginate(20);
         return view('dashboard.poin_penilaian', [
             'aspeks' => $aspeks,
             'poins' => $poins
         ]);
     }
+
+    public function show()
+    {
+        // Ambil pengguna yang sedang login
+        $logged_in_user = Auth::user();
+        
+        // Ambil data pengguna dengan ID 2
+        $guru = User::find(2); // Sesuaikan model dan ID sesuai kebutuhan
+
+        // Oper data ke view
+        return view('nama_view', compact('logged_in_user', 'guru'));
+    }
+
 
     public function add_poin_penilaian(Request $request) {
         $request->validate([
@@ -387,7 +400,7 @@ class Dashboard extends Controller
             $query->where('biodata.jenis_kelamin', $request->kelamin);
         }
 
-        $users = $query->paginate(10);
+        $users = $query->paginate(20);
         return view('dashboard.nilai', ['all_siswa' => $users]);
     }
 

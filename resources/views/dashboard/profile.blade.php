@@ -33,12 +33,6 @@
                                 <div class="col-md-8 d-flex align-items-center">
                                     <h6 class="mb-0">Informasi profil</h6>
                                 </div>
-                                <div class="col-md-4 text-end">
-                                    <button class="btn" data-bs-toggle="modal" data-bs-target="#editprofile">
-                                        <i class="fas fa-user-edit text-secondary text-sm" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="Edit Profile"></i>
-                                    </button>
-                                </div>
                             </div>
                         </div>
                         <div class="card-body p-3">
@@ -51,9 +45,15 @@
                                 <li class="list-group-item border-0 ps-0 text-sm"><strong
                                         class="text-dark">NISN:</strong> &nbsp; {{$biodata->nisn}}</li>
                                 @endif
-                                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Tempat
-                                        Tanggal lahir:</strong> &nbsp; {{$biodata->tempat_lahir}},
-                                    {{$biodata->tanggal_lahir}}</li>
+                                @php
+use Carbon\Carbon;
+Carbon::setLocale('id'); // Mengatur lokal Carbon ke bahasa Indonesi
+@endphp
+                                <ul class="list-group">
+                                    <li class="list-group-item border-0 ps-0 text-sm">
+                                        <strong class="text-dark">Tempat Tanggal Lahir:</strong> &nbsp; 
+                                        {{ $biodata->tempat_lahir }},
+                                        {{ Carbon::parse($biodata->tanggal_lahir)->translatedFormat('d F Y') }}
                                 <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Jenis
                                         Kelamin:</strong> &nbsp;
                                     {{$biodata->jenis_kelamin === "l" ? 'Laki-laki' : ($biodata->jenis_kelamin === "p" ? 'Perempuan' : '-')}}

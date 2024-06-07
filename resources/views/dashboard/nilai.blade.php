@@ -3,7 +3,7 @@
 <div class="card my-5">
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-            <h6 class="text-white text-capitalize ps-3">Daftar Siswa PAUD Teratai</h6>
+            <h6 class="text-white text-capitalize ps-3">Daftar Siswa </h6>
         </div>
     </div>
     <div class="card-body px-2 pb-2">
@@ -14,18 +14,6 @@
                         <div class="input-group input-group-outline">
                             <label class="form-label">Cari</label>
                             <input name="search" type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3 col-lg-2">
-                        <div class="input-group input-group-outline">
-                            <select name="agama" class="form-control" id="agama">
-                                <option value="">Pilih agama</option>
-                                <option value="islam">Islam</option>
-                                <option value="kristen">Kristen</option>
-                                <option value="budha">Budha</option>
-                                <option value="Hindu">Hindu</option>
-                                <option value="konghucu">Konghucu</option>
-                            </select>
                         </div>
                     </div>
                     <div class="col-12 col-md-3 col-lg-2">

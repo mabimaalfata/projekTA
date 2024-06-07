@@ -99,7 +99,7 @@
         <div class="input-group input-group-outline ms-3" style="max-width: 150px">
             <select id="filter-angkatan" class="form-control" name="angkatan">
                 <option value="">Semua Tahun</option>
-                @for ($i = 2000; $i <= date('Y'); $i++)
+                @for ($i = 2020; $i <= date('Y'); $i++)
                     <option value="{{ $i }}">{{ $i }}</option>
                 @endfor
                 @for ($i = date('Y') + 1; $i <= 2045; $i++)

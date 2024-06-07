@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('semester');
             $table->integer('awal_ajaran');
             $table->integer('akhir_ajaran');
-            $table->enum('nilai', ['mb','bsh', 'bsb']);
+            $table->enum('nilai', ['mb','bsh','bsb']);
             $table->timestamps();
         });
     }

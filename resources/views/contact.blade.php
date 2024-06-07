@@ -5,7 +5,7 @@
 <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center">
 
-        <h1 class="logo me-auto"><a href="/">Paud Teratai</a></h1>
+        <h1 class="logo me-auto"><a href="/"><img src="assets/landing/img/hero-bg.jpg" >TK ISlAM HASANUDDIN</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
@@ -18,7 +18,7 @@
             <i class="bi bi-list mobile-nav-toggle"></i>
         </nav><!-- .navbar -->
 
-        <a href="courses.html" class="get-started-btn" data-bs-toggle="modal" data-bs-target="#masuk">Masuk</a>
+        <a href="{{ route('login') }}" class="get-started-btn">{{Auth::check() ? 'Dashboard' : 'Masuk'}}</a>    </div>
     </div>
 </header><!-- End Header -->
 <main id="main">
@@ -26,10 +26,44 @@
     <!-- ======= Breadcrumbs ======= -->
     <div class="breadcrumbs" data-aos="fade-in">
         <div class="container">
-            <h2>Contact Us</h2>
-            <p>Est dolorum ut non facere possimus quibusdam eligendi voluptatem. Quia id aut similique quia voluptas sit quaerat debitis. Rerum omnis ipsam aperiam consequatur laboriosam nemo harum praesentium. </p>
+            <h2>Hubungi Kami</h2>
+            <p>"Silakan hubungi kami untuk informasi lebih lanjut atau pertanyaan lainnya." </p>
         </div>
     </div><!-- End Breadcrumbs -->
+    <section id="about" class="about">
+        <div class="container" data-aos="fade-up">
+
+            <div class="row">
+                <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
+                    <img src="assets/landing/img/hero-bg.jpg" class="img-fluid" alt="">
+                </div>
+                <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content">
+                    <h3>Hubungi Kami </h3>
+                    <p class="fst-italic">
+                    <h2>Phone</h2>
+                    </p>
+                    <ul>
+                        <li>
+                            <h4><i class="class=bi bi-phone"></i>
+                                0821 3486 3529</h4>
+                                
+                        </li>
+                    </ul>
+                    <p class="fst-italic">
+                    <h2>Email</h2>
+                    </p>
+                    <ul>
+                        <li>
+                            <h4><i  class="bi bi-envelope"></i>
+                                tk.islamhasanuddin@gmail.com</h4>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+
+        </div>
+    </section><!-- End About Section -->
     <!-- Modal Body -->
     <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
     <div class="modal fade" id="masuk" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
